@@ -118,3 +118,11 @@ def get_weekly_url(city_id):
     api = 'http://api.openweathermap.org/data/2.5/forecast?id='
     full_api_url = api + str(city_id) + '&mode=json&units=' + unit + '&APPID=' + user_api
     return full_api_url
+
+def get_monthly_url(city_id):
+    user_api = 'f2355410d95beeedbbd84dc9cc762fdc'
+    unit = 'metric'
+    api = 'http://api.openweathermap.org/data/2.5/forecast?id='
+    full_api_url = api + str(city_id) + '&mode=json&units=' + unit + '&APPID=' + user_api
+    return full_api_url
+
