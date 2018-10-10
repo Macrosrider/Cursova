@@ -5,7 +5,16 @@ import time
 
 class Weather():
     def __init__(self):
-        self.location = get_city_id(input('Enter the city you want know the weather (Lviv, UA): \n'))
+        inp = input('Enter the city you want know the weather (Lviv, UA): \n')
+        try:
+            inp = inp.split(',')
+            if len(inp[0]) > 2:
+                print("Incorrect country code")
+            if len(inp[1]) > 10:
+                print("Incorrect city name")
+        except IndexError as e:
+            print(e)
+        self.location = get_city_id(inp)
 
     def get_daily_weather_in_location(self):
         url = get_daily_url(self.location)
@@ -22,26 +31,29 @@ class Weather():
         jdata = json.loads(output)
         path.close()
         return jdata
+    
+    def get_monthly_weather_in_location(self):
+        url = get_monthly_url(self.location)
+        path = urllib.request.urlopen(url)
+        output = path.read().decode('utf-8')
+        jdata = json.loads(output)
+        path.close()
+        return jdata
 
     def temperature(self, data):
-        temp = data['main']
-        return temp['temp']
+        return data['main']['temp']
 
     def wind_speed(self, data):
-        temp = data['wind']
-        return temp['speed']
+        return data['wind']['speed']
 
     def humidity(self, data):
-        temp = data['main']
-        return temp['humidity']
+        return data['main']['humidity']
 
     def pressure(self, data):
-        temp = data['main']
-        return temp['pressure']
+        return data['main']['pressure']
 
     def status(self, data):
-        temp = data['weather']
-        return temp['main']
+        return data['weather']['main']
 
     def wind_vector(self, data):
         temp = data['wind']
@@ -55,8 +67,7 @@ class Weather():
             return 'East'
 
     def visibility(self, data):
-        temp = data['id']
-        return temp['visibility']
+        return data['id']['visibility']
 
     def daily_forecast(self, data):
         tim = time.time()
@@ -107,3 +118,11 @@ def get_weekly_url(city_id):
     api = 'http://api.openweathermap.org/data/2.5/forecast?id='
     full_api_url = api + str(city_id) + '&mode=json&units=' + unit + '&APPID=' + user_api
     return full_api_url
+
+def get_monthly_url(city_id):
+    user_api = 'f2355410d95beeedbbd84dc9cc762fdc'
+    unit = 'metric'
+    api = 'http://api.openweathermap.org/data/2.5/forecast?id='
+    full_api_url = api + str(city_id) + '&mode=json&units=' + unit + '&APPID=' + user_api
+    return full_api_url
+
